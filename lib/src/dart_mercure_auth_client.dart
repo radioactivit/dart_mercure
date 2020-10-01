@@ -9,7 +9,9 @@ class AuthClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
-    request.headers['Authorization'] = 'Bearer $_token';
+    if(_token.length > 0) {
+      request.headers['Authorization'] = 'Bearer $_token';
+    }
     return _inner.send(request);
   }
 }
