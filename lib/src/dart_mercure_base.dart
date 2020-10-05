@@ -15,13 +15,13 @@ class Mercure {
         _client = AuthClient(token, http.Client());
 
   /// Subscribe to one mercure topic
-  StreamSubscription<Event> subscribeTopic(
+  Future<StreamSubscription<Event>> subscribeTopic(
       {@required String topic,
-      @required void Function(Event event) onData,
-      Function onError,
-      void Function() onDone,
-      bool cancelOnError}) {
-    subscribeTopics(
+        @required void Function(Event event) onData,
+        Function onError,
+        void Function() onDone,
+        bool cancelOnError}) {
+    return subscribeTopics(
         topics: <String>[topic],
         onData: onData,
         onError: onError,
@@ -29,18 +29,19 @@ class Mercure {
         cancelOnError: cancelOnError);
   }
 
+
   /// Subscribe to a list of mercure topics
-  StreamSubscription<Event> subscribeTopics(
+  Future<StreamSubscription<Event>> subscribeTopics(
       {@required List<String> topics,
-      @required void Function(Event event) onData,
-      Function onError,
-      void Function() onDone,
-      bool cancelOnError}) {
+        @required void Function(Event event) onData,
+        Function onError,
+        void Function() onDone,
+        bool cancelOnError}) async {
     var params = topics.map((topic) => 'topic=$topic&').join();
-    EventSource.connect('$hub_url?$params', client: _client).then((eventSource) {
-      eventSource.listen(onData,
-          onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-    });
+
+    var eventSource = await EventSource.connect('$hub_url?$params', client: _client);
+    return eventSource.listen(onData,
+        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
   /// Publish data in mercure topic
