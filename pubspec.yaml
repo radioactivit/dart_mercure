@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   eventsource: ^0.2.2
-  http: ^0.12.0+2
+  http: ^0.13.3
   meta: ^1.1.7
 
 dev_dependencies:
